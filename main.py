@@ -1,27 +1,19 @@
-import os
-from langchain.chains import ConversationChain
-from langchain.llms import HuggingFaceHub
+from langchain.prompts import PromptTemplate
+from langchain.chains import LLMChain
+from langchain.agents import initialize_agent, Tool, AgentExecutor, AgentType
+from langchain_groq import ChatGroq
 from dotenv import load_dotenv
+import os
+import re
 
 load_dotenv()
 
-# Configuração do modelo da Hugging Face
-llm = HuggingFaceHub(
-    repo_id="Qwen/Qwen2.5-72B-Instruct",
-    model_kwargs={"temperature": 0.2},
-    huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")
-)
+groq_client = ChatGroq(model="llama-3.3-70b-versatile")
 
-chat = ConversationChain(llm=llm)
+# Função para criar ou atualizar o arquivo Python
 
 
 def create_or_update_py_file(file_name, content):
-    """
-    Cria ou atualiza um arquivo Python com o conteúdo especificado.
-
-    :param file_name: Nome do arquivo a ser criado ou atualizado.
-    :param content: Conteúdo a ser escrito no arquivo.
-    """
     try:
         with open(file_name, "w") as file:
             file.write(content)
@@ -30,29 +22,62 @@ def create_or_update_py_file(file_name, content):
         print(f"Erro ao manipular o arquivo {file_name}: {e}")
 
 
-def chat_sequence():
+def remove_delimiters(text):
+    # Remove os delimitadores '```' do início e fim do texto
+    if text.startswith("```") and text.endswith("```"):
+        return text[3:-3].strip()  # Retira os 3 primeiros e últimos caracteres
+    return text
+
+# Função para gerar conteúdo da API
+
+
+def get_model_response(prompt):
     """
-    Função interativa que guia o usuário para criar uma rota de API usando LangChain.
+    Função que faz a chamada ao modelo para obter uma resposta.
+
+    :param prompt: Pergunta ou instrução para o modelo.
+    :return: Resposta do modelo.
     """
+    response = groq_client.invoke(prompt).content
+    return response
+
+# Função para criar a rota de API
+
+
+def create_api_route():
     print("Bem-vindo ao criador de rotas de API! Responda as perguntas a seguir.")
 
-    # Usando o modelo de linguagem para obter informações do usuário
-    input_data = chat.run("Qual os dados de entrada da rota?")
-    output_data = chat.run("Qual os dados de saída da rota?")
-    business_rule = chat.run("Qual é a regra de negócio da rota?")
-    storage_info = chat.run("O que deve ser armazenado pela rota?")
+    # Perguntas para o modelo
+    input_data = input("Quais são os dados de entrada da rota?")
+    input_data = "nome e senha"
+    output_data = input("Quais são os dados de saída da rota?")
+    output_data = "token de autenticação"
+    business_rule = input("Qual é a regra de negócio da rota?")
+    business_rule = "validar o usuário e senha e retornar um token de autenticação"
+    storage_info = input("O que deve ser armazenado pela rota?")
+    storage_info = "nenhum dado"
 
     # Prompt para o modelo gerar o código da rota
     route_prompt = f"""
-    Crie uma rota de API em Python utilizando Functions Framework com as seguintes especificações:
-    - Dados de entrada: {input_data}
-    - Dados de saída: {output_data}
-    - Regra de negócio: {business_rule}
-    - O que deve ser armazenado: {storage_info}
+    Create a  API route with Python and functions-framework of google with this specifications:
+    - Entry data: {input_data}
+    - Out data: {output_data}
+    - Bussiness: {business_rule}
+    - Storage rules: {storage_info}
+
+    Use this rules inside tags <RULES>:
+    <RULES>
+     - Use the specifications that are provided
+     - The response have to be ONLY code, without any text or comments before or after
+    <RULES>
+
+    Follow this example:
+
     """
 
-    # Gerar conteúdo da API usando a LLM
-    api_content = chat.run(route_prompt)
+    # Gerar conteúdo da API
+    api_content = get_model_response(route_prompt)
+    api_content = remove_delimiters(api_content)
 
     # Nome do arquivo gerado
     file_name = "generated_api.py"
@@ -64,4 +89,4 @@ def chat_sequence():
 
 
 if __name__ == "__main__":
-    chat_sequence()
+    create_api_route()

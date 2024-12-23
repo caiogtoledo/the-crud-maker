@@ -1,5 +1,6 @@
 langchain
 huggingface-hub
 langchain-community
+langchain-groq
 functions-framework
 python-dotenv
