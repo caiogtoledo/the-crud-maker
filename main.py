@@ -10,39 +10,6 @@ load_dotenv()
 
 groq_client = ChatGroq(model="llama-3.3-70b-versatile")
 
-# Função para criar ou atualizar o arquivo Python
-
-
-def create_or_update_py_file(file_name, content):
-    try:
-        with open(file_name, "w") as file:
-            file.write(content)
-        print(f"Arquivo {file_name} criado/atualizado com sucesso!")
-    except Exception as e:
-        print(f"Erro ao manipular o arquivo {file_name}: {e}")
-
-
-def remove_delimiters(text):
-    # Remove os delimitadores '```' do início e fim do texto
-    if text.startswith("```") and text.endswith("```"):
-        return text[3:-3].strip()  # Retira os 3 primeiros e últimos caracteres
-    return text
-
-# Função para gerar conteúdo da API
-
-
-def get_model_response(prompt):
-    """
-    Função que faz a chamada ao modelo para obter uma resposta.
-
-    :param prompt: Pergunta ou instrução para o modelo.
-    :return: Resposta do modelo.
-    """
-    response = groq_client.invoke(prompt).content
-    return response
-
-# Função para criar a rota de API
-
 
 def create_api_route():
     print("Bem-vindo ao criador de rotas de API! Responda as perguntas a seguir.")

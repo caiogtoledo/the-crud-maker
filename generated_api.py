@@ -1,36 +1,17 @@
-python
-from functions_framework import httplib
-from flask import request, jsonify
-import jwt
-import time
+```python
+from functions_framework import http_function
+from flask import jsonify
 
-def authenticate_user(nome, senha):
-    # Simulating a user database for demonstration purposes
-    users = {
-        "user1": "password1",
-        "user2": "password2"
-    }
-    
-    if nome in users and users[nome] == senha:
-        return True
+users = {
+    1: {"nome": "Joao", "idade": 30, "email": "joao@example.com"},
+    2: {"nome": "Maria", "idade": 25, "email": "maria@example.com"},
+}
+
+@http_function
+def get_user(request):
+    id_usuario = int(request.args.get("id"))
+    if id_usuario in users:
+        return jsonify(users[id_usuario])
     else:
-        return False
-
-def generate_token(nome):
-    payload = {
-        'nome': nome,
-        'exp': int(time.time()) + 3600
-    }
-    return jwt.encode(payload, 'secret_key', algorithm='HS256')
-
-@httplib.HTTP
-def entry(request):
-    data = request.get_json()
-    nome = data.get('nome')
-    senha = data.get('senha')
-    
-    if authenticate_user(nome, senha):
-        token = generate_token(nome)
-        return jsonify({'token': token})
-    else:
-        return jsonify({'error': 'Invalid credentials'}), 401
+        return jsonify({"error": "Usuário não encontrado"}), 404
+```
