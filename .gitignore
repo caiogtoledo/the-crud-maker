@@ -1,0 +1,72 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+
+# Cache e arquivos temporários
+*.log
+*.cache
+*.temp
+*.bak
+*.swp
+
+# Configurações de IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Arquivos de ambiente
+.env
+*.env.*
+
+# Arquivos do Docker
+docker-compose.override.yml
+*.pid
+
+# Dados sensíveis e saídas
+*.sqlite3
+*.db
+*.csv
+*.json
+*.key
+*.pem
+
+# Arquivos gerados pelo Python
+dist/
+build/
+*.egg-info/
+
+# Arquivos de cobertura de teste
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Configuração de containers e Kubernetes
+.kube/
+config.yaml
+
+# Arquivos do LangChain / LLM
+outputs/
+.llm_cache/
+
+# Logs e relatórios de teste
+pip-log.txt
+pytest_cache/
+pytest.log
+test-reports/
+
+# Arquivos específicos do sistema operacional
+.DS_Store
+Thumbs.db

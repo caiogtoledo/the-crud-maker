@@ -1,4 +1,4 @@
-def create_or_update_py_file(file_name, content):
+def create_or_update_py_file(file_name: str, content: str):
     try:
         with open(file_name, "w") as file:
             file.write(content)
