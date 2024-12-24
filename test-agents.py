@@ -53,6 +53,8 @@ tools = [
         func=collect_inputs,
         description="Coleta as entradas necessárias para gerar uma rota de API."
     ),
+    # TODO - Criar uma pasta específica para cada rota
+    # TODO - Criar uma tool para cada arquivo necessário
     Tool(
         name="Gerar Código de API",
         func=generate_api_code,
