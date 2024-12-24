@@ -40,6 +40,7 @@ def collect_inputs(*args, **kwargs):
 def generate_api_code(inputs):
     import ast
     print("inputs:", inputs)
+    inputs = inputs.replace("inputs=", "")
     inputs = ast.literal_eval(inputs)
     prompt = f"""
     Create a  API route with Python and functions-framework of google with this specifications:
@@ -84,20 +85,18 @@ tools = [
     )
 ]
 
+tasks = {
+    'colect': PromptTemplate.from_template("Coletar os dados de entrada necessários para gerar a API."),
+    'generate_code': PromptTemplate.from_template("Gerar o código da API com as especificações coletadas: {inputs}"),
+    'save': PromptTemplate.from_template("Salvar o código gerado no arquivo: {generated_code}")
+}
+
 # Inicializando o agente
 agent = initialize_agent(
     tools, groq_client, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
 
 # Execução principal
 if __name__ == "__main__":
-    print("Bem-vindo ao criador de rotas de API!")
-    # Coletar entradas
-    inputs = agent.invoke(
-        "Coletar os dados de entrada necessários para gerar a API.")
-    # Gerar código da API
-    generated_code = agent.invoke(
-        f"Gerar o código da API com as especificações coletadas: {inputs}")
-    # Salvar o código
-    result = agent.invoke(
-        f"Salvar o código gerado no arquivo: {generated_code}")
+    chain = tasks['colect'] | tasks['generate_code'] | tasks['save']
+    result = agent.invoke(chain)
     print(result)
