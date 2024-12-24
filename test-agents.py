@@ -7,6 +7,7 @@ import os
 
 from shared.functions.collect_inputs import collect_inputs
 from shared.functions.create_or_update_py_file import create_or_update_py_file
+from shared.functions.get_model_response import get_model_response
 
 load_dotenv()
 
