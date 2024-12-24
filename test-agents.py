@@ -55,7 +55,7 @@ def generate_api_code(inputs):
      - The response have to be ONLY code, without any text or comments before or after
     <RULES>
     """
-    return get_model_response(prompt)
+    return get_model_response(prompt).replace("```python", "").replace("```", "")
 
 # Ferramenta para salvar o código gerado
 
