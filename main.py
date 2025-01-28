@@ -6,9 +6,12 @@ from dotenv import load_dotenv
 import os
 import re
 
+from shared.functions import create_or_update_py_file, get_model_response, remove_delimiters
+
 load_dotenv()
 
-groq_client = ChatGroq(model="llama-3.3-70b-versatile")
+groq_client = ChatGroq(model="llama-3.3-70b-specdec",
+                       api_key=os.getenv("GROQ_API_KEY"))
 
 
 def create_api_route():
